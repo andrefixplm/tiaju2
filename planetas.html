@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-G">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Solar para Crianças</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Evitar scroll horizontal na página inteira */
+        }
+
+        /* Estilo para o Sol */
+        .sun {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, #FFD700, #FFA500, #FF4500);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA500;
+            animation: pulse 2s infinite ease-in-out;
+            position: relative; /* Para tooltip */
+        }
+
+        /* Estilos base para os planetas */
+        .planet {
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white; /* Cor do texto do nome do planeta (se houver) */
+            font-weight: bold;
+            position: relative; /* Para tooltip */
+        }
+
+        .planet:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+        }
+        
+        .planet.active {
+            transform: scale(1.15);
+            box-shadow: 0 0 30px #00ffff, 0 0 50px #00ffff; /* Destaque azulado */
+        }
+
+        /* Cores e tamanhos específicos para cada planeta (simplificado para crianças) */
+        #mercury { background-color: #A9A9A9; width: 30px; height: 30px; }
+        #venus { background-color: #F5DEB3; width: 45px; height: 45px; }
+        #earth { background-color: #4682B4; width: 50px; height: 50px; } /* Azul com detalhes verdes */
+        #earth::before { /* Adiciona um pouco de verde para a Terra */
+            content: '';
+            position: absolute;
+            width: 40%;
+            height: 30%;
+            background-color: #32CD32; /* Verde lima */
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; /* Forma orgânica */
+            opacity: 0.7;
+            transform: rotate(45deg);
+        }
+        #mars { background-color: #FF6347; width: 40px; height: 40px; }
+        #jupiter { background-color: #DEB887; width: 90px; height: 90px; }
+        #saturn { background-color: #F0E68C; width: 75px; height: 75px; position: relative; }
+        /* Anéis de Saturno */
+        #saturn::after {
+            content: '';
+            position: absolute;
+            width: 150%; /* Mais largo que o planeta */
+            height: 20%; /* Espessura do anel */
+            border: 5px solid #D2B48C; /* Cor do anel */
+            border-radius: 50%;
+            top: 40%;
+            left: -25%;
+            box-sizing: border-box;
+            transform: rotate(-20deg); /* Inclinação do anel */
+        }
+        #uranus { background-color: #AFEEEE; width: 60px; height: 60px; }
+        #neptune { background-color: #1E90FF; width: 55px; height: 55px; }
+
+        /* Animação de pulsação para o Sol */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA500; }
+            50% { transform: scale(1.05); box-shadow: 0 0 80px #FFD700, 0 0 120px #FFA500; }
+            100% { transform: scale(1); box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA500; }
+        }
+
+        /* Animação de estrelas piscando */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Para que as estrelas não saiam da área do body */
+            z-index: -1; /* Atrás de todo o conteúdo */
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite ease-in-out alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* Caixa de informações */
+        #info-box {
+            min-height: 100px; /* Altura mínima para a caixa de texto */
+            transition: opacity 0.5s ease;
+        }
+        
+        /* Tooltip para nome do planeta (acessibilidade) */
+        .tooltip {
+            visibility: hidden;
+            width: auto;
+            min-width: 80px; /* Largura mínima */
+            background-color: rgba(0,0,0,0.7);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 10;
+            bottom: 110%; /* Posição acima do planeta */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap; /* Evita quebra de linha no nome */
+        }
+
+        .planet:hover .tooltip, .sun:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Ajustes para telas menores */
+        @media (max-width: 768px) {
+            .sun { width: 100px; height: 100px; }
+            #mercury { width: 20px; height: 20px; }
+            #venus { width: 30px; height: 30px; }
+            #earth { width: 35px; height: 35px; }
+            #mars { width: 25px; height: 25px; }
+            #jupiter { width: 70px; height: 70px; }
+            #saturn { width: 60px; height: 60px; }
+            #saturn::after { border-width: 3px; }
+            #uranus { width: 50px; height: 50px; }
+            #neptune { width: 45px; height: 45px; }
+
+            .solar-system-container {
+                padding-left: 10px; /* Espaço para o Sol não ficar colado na borda */
+                padding-right: 10px;
+            }
+            #info-box {
+                font-size: 0.875rem; /* Texto um pouco menor na caixa de info */
+            }
+        }
+         @media (max-width: 480px) {
+            .sun { width: 80px; height: 80px; }
+            #mercury { width: 18px; height: 18px; }
+            #venus { width: 25px; height: 25px; }
+            #earth { width: 28px; height: 28px; }
+            #mars { width: 22px; height: 22px; }
+            #jupiter { width: 60px; height: 60px; }
+            #saturn { width: 50px; height: 50px; }
+            #saturn::after { border-width: 2px; width: 140%; left: -20%;}
+            #uranus { width: 40px; height: 40px; }
+            #neptune { width: 38px; height: 38px; }
+            
+            .planets-row {
+                gap: 0.5rem; /* Reduzir mais o espaçamento entre planetas */
+            }
+            #info-box {
+                font-size: 0.8rem; /* Texto ainda menor */
+                padding: 0.75rem; /* Menor padding */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="stars" id="stars-container"></div>
+
+    <header class="mb-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-yellow-300">Olá, pequenos exploradores!</h1>
+        <p class="text-xl md:text-2xl text-blue-300 mt-2">Vamos conhecer o Sistema Solar?</p>
+    </header>
+
+    <div class="solar-system-container w-full max-w-5xl overflow-x-auto pb-4 mb-8">
+        <div class="flex items-center justify-start space-x-4 md:space-x-6 lg:space-x-8 p-4 min-w-max planets-row">
+            <div id="sun" class="sun relative flex-shrink-0">
+                <span class="tooltip">Sol</span>
+            </div>
+            
+            <div id="mercury" class="planet flex-shrink-0" data-info="Eu sou Mercúrio! Sou o planeta mais pertinho do Sol. Sou bem rapidinho!" data-name="Mercúrio">
+                <span class="tooltip">Mercúrio</span>
+            </div>
+            <div id="venus" class="planet flex-shrink-0" data-info="Eu sou Vênus! Brilho bastante lá no céu. Sou muito, muito quente!" data-name="Vênus">
+                <span class="tooltip">Vênus</span>
+            </div>
+            <div id="earth" class="planet flex-shrink-0" data-info="Eu sou a Terra! É aqui que nós vivemos. Temos água, ar e muitas plantinhas e bichinhos! Olá!" data-name="Terra">
+                <span class="tooltip">Terra</span>
+            </div>
+            <div id="mars" class="planet flex-shrink-0" data-info="Eu sou Marte! Sou conhecido como o planeta vermelho. Tenho montanhas bem altas!" data-name="Marte">
+                <span class="tooltip">Marte</span>
+            </div>
+            <div id="jupiter" class="planet flex-shrink-0" data-info="Eu sou Júpiter! Sou o maior planeta de todos, um gigante gasoso! Tenho uma mancha vermelha que é uma tempestade enorme." data-name="Júpiter">
+                <span class="tooltip">Júpiter</span>
+            </div>
+            <div id="saturn" class="planet flex-shrink-0" data-info="Eu sou Saturno! Tenho anéis bonitos feitos de gelo e poeira que giram à minha volta." data-name="Saturno">
+                <span class="tooltip">Saturno</span>
+            </div>
+            <div id="uranus" class="planet flex-shrink-0" data-info="Eu sou Urano! Sou um planeta azul-esverdeado bem gelado e giro deitado!" data-name="Urano">
+                <span class="tooltip">Urano</span>
+            </div>
+            <div id="neptune" class="planet flex-shrink-0" data-info="Eu sou Netuno! Sou o planeta mais longe do Sol. Sou muito azul e tenho ventos super fortes!" data-name="Netuno">
+                <span class="tooltip">Netuno</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="info-box" class="w-full max-w-2xl bg-blue-800 bg-opacity-70 p-6 rounded-xl shadow-2xl text-center text-lg md:text-xl">
+        <p id="planet-name" class="font-bold text-2xl md:text-3xl mb-2 text-yellow-200">Bem-vindos!</p>
+        <p id="planet-info">Cliquem em um planeta para aprender sobre ele!</p>
+    </div>
+
+    <footer class="mt-8 text-center text-sm text-gray-400">
+        <p>Feito com ❤️ para os pequenos astrônomos!</p>
+    </footer>
+
+    <script>
+        // Seleciona os elementos do DOM
+        const planets = document.querySelectorAll('.planet');
+        const sun = document.getElementById('sun'); // Seleciona o Sol
+        const infoBoxName = document.getElementById('planet-name');
+        const infoBoxInfo = document.getElementById('planet-info');
+        const starsContainer = document.getElementById('stars-container');
+        let activePlanet = null; // Para rastrear o planeta ativo
+
+        // Informação sobre o Sol
+        const sunInfo = {
+            name: "Sol",
+            info: "Eu sou o Sol! Sou uma estrela bem grande e quentinha que ilumina e aquece todos os planetas."
+        };
+
+        // Função para criar estrelas piscando
+        function createStars() {
+            const numberOfStars = 100; // Quantidade de estrelas
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                // Adiciona um delay aleatório para que as estrelas não pisquem todas juntas
+                star.style.animationDelay = `${Math.random() * 2}s`; 
+                // Tamanhos variados para as estrelas
+                const size = Math.random() * 2 + 1; // Tamanho entre 1px e 3px
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Adiciona evento de clique para o Sol
+        sun.addEventListener('click', () => {
+            // Remove a classe 'active' do planeta anteriormente ativo, se houver
+            if (activePlanet) {
+                activePlanet.classList.remove('active');
+            }
+            sun.classList.add('active'); // Adiciona 'active' ao Sol (mesmo que não seja um planeta)
+            activePlanet = sun; // Define o Sol como "ativo" para lógica de desativação
+
+            infoBoxName.textContent = sunInfo.name;
+            infoBoxInfo.textContent = sunInfo.info;
+            infoBoxName.parentElement.style.opacity = 0; // Efeito de fade
+            setTimeout(() => {
+                infoBoxName.parentElement.style.opacity = 1;
+            }, 100);
+        });
+        
+        // Adiciona evento de clique para cada planeta
+        planets.forEach(planet => {
+            planet.addEventListener('click', () => {
+                // Remove a classe 'active' do planeta anteriormente ativo
+                if (activePlanet) {
+                    activePlanet.classList.remove('active');
+                }
+                // Adiciona a classe 'active' ao planeta clicado
+                planet.classList.add('active');
+                activePlanet = planet;
+
+                const name = planet.getAttribute('data-name');
+                const info = planet.getAttribute('data-info');
+                
+                // Atualiza a caixa de informações com um pequeno efeito de fade
+                infoBoxName.parentElement.style.opacity = 0;
+                setTimeout(() => {
+                    infoBoxName.textContent = name;
+                    infoBoxInfo.textContent = info;
+                    infoBoxName.parentElement.style.opacity = 1;
+                }, 100); // Pequeno delay para o efeito de fade
+            });
+        });
+
+        // Inicializa as estrelas
+        createStars();
+
+        // Adiciona um ouvinte de evento para fechar a informação se clicar fora dos planetas ou do sol
+        document.body.addEventListener('click', (event) => {
+            // Verifica se o clique foi fora de um planeta, do sol ou da caixa de informação
+            if (!event.target.closest('.planet') && !event.target.closest('.sun') && !event.target.closest('#info-box')) {
+                if (activePlanet) {
+                    activePlanet.classList.remove('active');
+                    activePlanet = null;
+                }
+                // Volta para a mensagem inicial
+                infoBoxName.parentElement.style.opacity = 0;
+                setTimeout(() => {
+                    infoBoxName.textContent = "Bem-vindos!";
+                    infoBoxInfo.textContent = "Cliquem em um planeta ou no Sol para aprender sobre ele!";
+                    infoBoxName.parentElement.style.opacity = 1;
+                }, 100);
+            }
+        });
+
+    </script>
+</body>
+</html>
