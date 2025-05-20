@@ -1,390 +1,428 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Solar para Crianças</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Evitar scroll horizontal na página inteira */
-            background-color: #0a0a23; /* Um azul escuro espacial mais profundo */
-        }
-
-        /* Estilo para o Sol */
-        .sun {
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, #FFD700, #FFA500, #FF4500);
-            border-radius: 50%;
-            box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA500, 0 0 140px #FF8C00; /* Mais brilho */
-            animation: pulse 2s infinite ease-in-out;
-            position: relative; 
-            cursor: pointer; 
-            flex-shrink: 0; /* Impedir que o sol encolha */
-        }
-
-        /* Estilos base para os planetas */
-        .planet {
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-            position: relative;
-            flex-shrink: 0; /* Impedir que os planetas encolham */
-        }
-
-        .planet:hover, .sun:hover {
-            transform: scale(1.15); /* Aumentar um pouco mais no hover */
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
-        }
-        
-        .planet.active, .sun.active {
-            transform: scale(1.2); /* Aumentar um pouco mais quando ativo */
-            box-shadow: 0 0 35px #00ffff, 0 0 55px #00dddd; 
-        }
-
-        /* Cores e tamanhos específicos para cada planeta */
-        #mercury { background-color: #A9A9A9; width: 30px; height: 30px; }
-        #venus { background-color: #F5DEB3; width: 45px; height: 45px; }
-        #earth { background-color: #4682B4; width: 50px; height: 50px; }
-        #earth::before {
-            content: '';
-            position: absolute;
-            width: 40%;
-            height: 30%;
-            background-color: #32CD32;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            opacity: 0.7;
-            transform: rotate(45deg);
-        }
-        #mars { background-color: #FF6347; width: 40px; height: 40px; }
-        #jupiter { background-color: #DEB887; width: 90px; height: 90px; }
-        #saturn { background-color: #F0E68C; width: 75px; height: 75px; position: relative; }
-        #saturn::after { /* Anéis de Saturno */
-            content: '';
-            position: absolute;
-            width: 150%; 
-            height: 20%; 
-            border: 5px solid #D2B48C; 
-            border-radius: 50%;
-            top: 40%;
-            left: -25%;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            transform: rotate(-20deg); 
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
         }
-        #uranus { background-color: #AFEEEE; width: 60px; height: 60px; }
-        #neptune { background-color: #1E90FF; width: 55px; height: 55px; }
 
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA500, 0 0 140px #FF8C00; }
-            50% { transform: scale(1.05); box-shadow: 0 0 80px #FFD700, 0 0 120px #FFA500, 0 0 160px #FF8C00; }
-            100% { transform: scale(1); box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA500, 0 0 140px #FF8C00; }
+        body {
+            background-color: #000;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
         .stars {
-            position: fixed; /* Fixo para não rolar com o conteúdo */
-            top: 0;
-            left: 0;
+            position: absolute;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            z-index: -1;
+            z-index: 1;
         }
 
         .star {
             position: absolute;
-            width: 2px;
-            height: 2px;
             background-color: white;
             border-radius: 50%;
-            animation: twinkle 2s infinite ease-in-out alternate;
         }
 
-        @keyframes twinkle {
-            0% { opacity: 0.3; transform: scale(0.7); } /* Mais sutil */
-            100% { opacity: 1; transform: scale(1.1); }
-        }
-        
-        #info-box {
-            min-height: 100px;
-            transition: opacity 0.5s ease, transform 0.3s ease; /* Adicionada transição de transform */
-            border: 1px solid rgba(0, 255, 255, 0.5); /* Borda sutil */
-        }
-        
-        .tooltip {
-            visibility: hidden;
-            width: auto;
-            min-width: 80px;
-            background-color: rgba(0,0,0,0.85); /* Mais opaco */
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px 12px; /* Mais padding */
-            position: absolute;
+        .solar-system {
+            position: relative;
+            width: 100%;
+            height: 100%;
             z-index: 10;
-            bottom: 120%; /* Um pouco mais acima */
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease-in-out;
+            z-index: 15;
+        }
+
+        .planet:hover {
+            transform: scale(1.2);
+        }
+
+        .planet:active {
+            transform: scale(0.95);
+        }
+
+        .planet.selected {
+            z-index: 20;
+            transform: scale(1.3);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: -25px;
             left: 50%;
             transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s, visibility 0.3s; /* Transição de visibilidade */
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
             white-space: nowrap;
-            font-size: 0.875rem; /* Tamanho da fonte do tooltip */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
         }
 
-        .planet:hover .tooltip, .sun:hover .tooltip {
-            visibility: visible;
+        .planet:hover .tooltip, .planet.selected .tooltip {
             opacity: 1;
         }
 
-        /* Ajustes para o container do sistema solar para melhor scroll */
-        .solar-system-container {
-            display: flex; /* Necessário para o alinhamento e espaçamento dos filhos */
-            align-items: center; /* Alinha os planetas verticalmente */
-            overflow-x: auto; /* Permite scroll horizontal */
-            overflow-y: hidden; /* Esconde scroll vertical */
-            width: 100%;
-            max-width: 90vw; /* Limita a largura máxima para melhor visualização em telas grandes */
-            margin-left: auto;
-            margin-right: auto;
-            -webkit-overflow-scrolling: touch; /* Scroll suave em iOS */
-            scrollbar-width: thin; /* Scrollbar mais fina no Firefox */
-            scrollbar-color: #4A5568 #2D3748; /* Cor do scrollbar no Firefox */
-        }
-        .solar-system-container::-webkit-scrollbar {
-            height: 8px; /* Altura do scrollbar */
-        }
-        .solar-system-container::-webkit-scrollbar-track {
-            background: #2D3748; /* Cor da trilha */
-            border-radius: 10px;
-        }
-        .solar-system-container::-webkit-scrollbar-thumb {
-            background-color: #4A5568; /* Cor do polegar do scrollbar */
-            border-radius: 10px;
-            border: 2px solid #2D3748; /* Espaçamento ao redor do polegar */
+        #sun {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at 30% 30%, #FFF176, #FDB813, #FF8E01);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 50px rgba(253, 184, 19, 0.8);
+            animation: pulsate 4s ease-in-out infinite;
         }
 
-        .planets-row {
-            display: flex; /* Mantém os planetas em linha */
-            align-items: center; /* Alinha verticalmente */
-            padding: 20px 10px; /* Padding interno para não cortar sombras */
-            gap: 20px; /* Espaçamento entre os astros - aumentado */
+        @keyframes pulsate {
+            0% { box-shadow: 0 0 30px rgba(253, 184, 19, 0.6); }
+            50% { box-shadow: 0 0 60px rgba(253, 184, 19, 0.8); }
+            100% { box-shadow: 0 0 30px rgba(253, 184, 19, 0.6); }
         }
 
+        #mercury {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(to bottom right, #D8D8D8, #8D8D8D, #D8D8D8);
+            top: 40%;
+            left: 35%;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        #venus {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(to bottom right, #FFD691, #E8A06A, #FFD691);
+            top: 35%;
+            left: 25%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        #earth {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(to bottom right, #73B9EF, #1E7FCB, #73B9EF);
+            top: 60%;
+            left: 30%;
+            animation: float 7s ease-in-out infinite;
+        }
+
+        #mars {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(to bottom right, #FF9D7A, #CF4F1F, #FF9D7A);
+            top: 65%;
+            left: 60%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        #jupiter {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(to bottom right, #F0DF9E, #CD8939, #F0DF9E);
+            top: 35%;
+            left: 70%;
+            animation: float 9s ease-in-out infinite;
+        }
+
+        #saturn {
+            width: 75px;
+            height: 75px;
+            background: linear-gradient(to bottom right, #F4E4A4, #E6BB62, #F4E4A4);
+            top: 55%;
+            left: 80%;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .saturn-rings {
+            position: absolute;
+            height: 20px;
+            width: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(216, 216, 216, 0.7);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(30deg);
+            box-shadow: none !important;
+        }
+
+        #uranus {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(to bottom right, #9DE3F3, #45BDD9, #9DE3F3);
+            top: 25%;
+            left: 85%;
+            animation: float 11s ease-in-out infinite;
+        }
+
+        #neptune {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(to bottom right, #5B96DB, #3269AF, #5B96DB);
+            top: 75%;
+            left: 90%;
+            animation: float 12s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0); }
+        }
+
+        .info-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(10, 10, 40, 0.9);
+            color: white;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-top: 3px solid #4a90e2;
+            z-index: 100;
+        }
+
+        .info-panel.visible {
+            transform: translateY(0);
+        }
+
+        .planet-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .planet-info {
+            font-size: 18px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .play-button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .play-button:hover {
+            background-color: #357dcb;
+            transform: scale(1.05);
+        }
+
+        .play-button:active {
+            transform: scale(0.95);
+        }
+
+        .play-button span {
+            margin-right: 8px;
+            font-size: 20px;
+        }
 
         @media (max-width: 768px) {
-            .sun { width: 100px; height: 100px; }
-            #mercury { width: 20px; height: 20px; }
-            #venus { width: 30px; height: 30px; }
-            #earth { width: 35px; height: 35px; }
-            #mars { width: 25px; height: 25px; }
-            #jupiter { width: 70px; height: 70px; }
-            #saturn { width: 60px; height: 60px; }
-            #saturn::after { border-width: 3px; }
-            #uranus { width: 50px; height: 50px; }
-            #neptune { width: 45px; height: 45px; }
-
-            .solar-system-container {
-                max-width: 100vw; /* Ocupa toda a largura em telas menores */
-                padding-left: 10px; 
-                padding-right: 10px;
+            .planet-title {
+                font-size: 20px;
             }
-            .planets-row {
-                gap: 15px; /* Espaçamento menor em telas menores */
-            }
-            #info-box {
-                font-size: 0.875rem;
-                margin-left: 1rem; /* Adiciona margem lateral */
-                margin-right: 1rem; /* Adiciona margem lateral */
-                width: calc(100% - 2rem); /* Ajusta a largura */
-            }
-             h1 { font-size: 2.5rem; } /* Ajuste no tamanho do título */
-             header p { font-size: 1.125rem; } /* Ajuste no tamanho do subtítulo */
-        }
-         @media (max-width: 480px) {
-            .sun { width: 80px; height: 80px; }
-            #mercury { width: 18px; height: 18px; }
-            #venus { width: 25px; height: 25px; }
-            #earth { width: 28px; height: 28px; }
-            #mars { width: 22px; height: 22px; }
-            #jupiter { width: 60px; height: 60px; }
-            #saturn { width: 50px; height: 50px; }
-            #saturn::after { border-width: 2px; width: 140%; left: -20%;}
-            #uranus { width: 40px; height: 40px; }
-            #neptune { width: 38px; height: 38px; }
             
-            .planets-row {
-                gap: 10px; /* Espaçamento ainda menor */
+            .planet-info {
+                font-size: 16px;
             }
-            #info-box {
-                font-size: 0.8rem;
-                padding: 0.75rem;
+            
+            #sun {
+                width: 100px;
+                height: 100px;
             }
-            h1 { font-size: 2rem; }
-            header p { font-size: 1rem; }
+            
+            #jupiter {
+                width: 70px;
+                height: 70px;
+            }
+            
+            #saturn {
+                width: 65px;
+                height: 65px;
+            }
+            
+            .saturn-rings {
+                width: 100px;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
-    <div class="stars" id="stars-container"></div>
-
-    <header class="mb-8 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-yellow-300">Olá, pequenos exploradores!</h1>
-        <p class="text-xl md:text-2xl text-blue-300 mt-2">Vamos conhecer o Sistema Solar?</p>
-    </header>
-
-    <div class="solar-system-container w-full">
-        <div class="planets-row"> <div id="sun" class="sun" data-audio="sol.mp3"> <span class="tooltip">Sol</span>
-            </div>
-            
-            <div id="mercury" class="planet" data-info="Eu sou Mercúrio! Sou o planeta mais pertinho do Sol. Sou bem rapidinho!" data-name="Mercúrio" data-audio="mercurio.mp3">
-                <span class="tooltip">Mercúrio</span>
-            </div>
-            <div id="venus" class="planet" data-info="Eu sou Vênus! Brilho bastante lá no céu. Sou muito, muito quente!" data-name="Vênus" data-audio="venus.mp3">
-                <span class="tooltip">Vênus</span>
-            </div>
-            <div id="earth" class="planet" data-info="Eu sou a Terra! É aqui que nós vivemos. Temos água, ar e muitas plantinhas e bichinhos! Olá!" data-name="Terra" data-audio="terra.mp3">
-                <span class="tooltip">Terra</span>
-            </div>
-            <div id="mars" class="planet" data-info="Eu sou Marte! Sou conhecido como o planeta vermelho. Tenho montanhas bem altas!" data-name="Marte" data-audio="marte.mp3">
-                <span class="tooltip">Marte</span>
-            </div>
-            <div id="jupiter" class="planet" data-info="Eu sou Júpiter! Sou o maior planeta de todos, um gigante gasoso! Tenho uma mancha vermelha que é uma tempestade enorme." data-name="Júpiter" data-audio="jupiter.mp3">
-                <span class="tooltip">Júpiter</span>
-            </div>
-            <div id="saturn" class="planet" data-info="Eu sou Saturno! Tenho anéis bonitos feitos de gelo e poeira que giram à minha volta." data-name="Saturno" data-audio="saturno.mp3">
-                <span class="tooltip">Saturno</span>
-            </div>
-            <div id="uranus" class="planet" data-info="Eu sou Urano! Sou um planeta azul-esverdeado bem gelado e giro deitado!" data-name="Urano" data-audio="urano.mp3">
-                <span class="tooltip">Urano</span>
-            </div>
-            <div id="neptune" class="planet" data-info="Eu sou Netuno! Sou o planeta mais longe do Sol. Sou muito azul e tenho ventos super fortes!" data-name="Netuno" data-audio="netuno.mp3">
-                <span class="tooltip">Netuno</span>
-            </div>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="solar-system" id="solarSystem">
+        <div id="sun" class="planet" data-info="Eu sou o Sol! Sou uma estrela bem grande e quentinha que ilumina e aquece todos os planetas." data-name="Sol" data-audio="sol.mp3">
+            <span class="tooltip">Sol</span>
+        </div>
+        
+        <div id="mercury" class="planet" data-info="Eu sou Mercúrio! Sou o planeta mais pertinho do Sol. Sou bem rapidinho!" data-name="Mercúrio" data-audio="mercurio.mp3">
+            <span class="tooltip">Mercúrio</span>
+        </div>
+        
+        <div id="venus" class="planet" data-info="Eu sou Vênus! Brilho bastante lá no céu. Sou muito, muito quente!" data-name="Vênus" data-audio="venus.mp3">
+            <span class="tooltip">Vênus</span>
+        </div>
+        
+        <div id="earth" class="planet" data-info="Eu sou a Terra! É aqui que nós vivemos. Temos água, ar e muitas plantinhas e bichinhos! Olá!" data-name="Terra" data-audio="terra.mp3">
+            <span class="tooltip">Terra</span>
+        </div>
+        
+        <div id="mars" class="planet" data-info="Eu sou Marte! Sou conhecido como o planeta vermelho. Tenho montanhas bem altas!" data-name="Marte" data-audio="marte.mp3">
+            <span class="tooltip">Marte</span>
+        </div>
+        
+        <div id="jupiter" class="planet" data-info="Eu sou Júpiter! Sou o maior planeta de todos, um gigante gasoso! Tenho uma mancha vermelha que é uma tempestade enorme." data-name="Júpiter" data-audio="jupiter.mp3">
+            <span class="tooltip">Júpiter</span>
+        </div>
+        
+        <div id="saturn" class="planet" data-info="Eu sou Saturno! Tenho anéis bonitos feitos de gelo e poeira que giram à minha volta." data-name="Saturno" data-audio="saturno.mp3">
+            <div class="saturn-rings"></div>
+            <span class="tooltip">Saturno</span>
+        </div>
+        
+        <div id="uranus" class="planet" data-info="Eu sou Urano! Sou um planeta azul-esverdeado bem gelado e giro deitado!" data-name="Urano" data-audio="urano.mp3">
+            <span class="tooltip">Urano</span>
+        </div>
+        
+        <div id="neptune" class="planet" data-info="Eu sou Netuno! Sou o planeta mais longe do Sol. Sou muito azul e tenho ventos super fortes!" data-name="Netuno" data-audio="netuno.mp3">
+            <span class="tooltip">Netuno</span>
         </div>
     </div>
-
-    <div id="info-box" class="w-full max-w-2xl bg-blue-800 bg-opacity-70 p-6 rounded-xl shadow-2xl text-center text-lg md:text-xl mt-8"> <p id="planet-name" class="font-bold text-2xl md:text-3xl mb-2 text-yellow-200">Bem-vindos!</p>
-        <p id="planet-info">Cliquem num planeta para aprender sobre ele!</p> </div>
-
-    <audio id="audio-player" style="display: none;"></audio> <footer class="mt-8 text-center text-sm text-gray-400">
-        <p>Feito com ❤️ para os pequenos astrónomos!</p> </footer>
-
+    
+    <div class="info-panel" id="infoPanel">
+        <h2 class="planet-title" id="planetTitle"></h2>
+        <p class="planet-info" id="planetInfo"></p>
+        <button class="play-button" id="playButton"><span>🔊</span> Ouvir novamente</button>
+    </div>
+    
     <script>
-        // Seleciona os elementos do DOM
-        const planets = document.querySelectorAll('.planet');
-        const sun = document.getElementById('sun');
-        const infoBoxName = document.getElementById('planet-name');
-        const infoBoxInfo = document.getElementById('planet-info');
-        const starsContainer = document.getElementById('stars-container');
-        const audioPlayer = document.getElementById('audio-player'); 
-        let activeCelestialBody = null; 
-
-        // Informação sobre o Sol
-        const sunDetails = {
-            name: "Sol",
-            info: "Eu sou o Sol! Sou uma estrela bem grande e quentinha que ilumina e aquece todos os planetas.",
-            audio: "sol.mp3" 
-        };
-
-        // Função para criar estrelas piscando
-        function createStars() {
-            const numberOfStars = 150; // Aumentar o número de estrelas
-            for (let i = 0; i < numberOfStars; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 4}s`; // Aumentar o delay para mais variação
-                const size = Math.random() * 2.5 + 0.5; // Tamanhos variados (0.5px a 3px)
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.opacity = `${Math.random() * 0.5 + 0.2}`; // Opacidade inicial variada
-                starsContainer.appendChild(star);
-            }
+        // Criar estrelas no fundo
+        const starsContainer = document.getElementById('stars');
+        const numStars = 200;
+        
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            
+            // Tamanho aleatório
+            const size = Math.random() * 3 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            
+            // Posição aleatória
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            
+            // Brilho aleatório
+            star.style.opacity = Math.random() * 0.8 + 0.2;
+            
+            // Animação de piscar
+            star.style.animation = `twinkle ${Math.random() * 5 + 3}s infinite alternate`;
+            
+            starsContainer.appendChild(star);
         }
-
+        
+        // Adicionar animação de piscar ao CSS
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes twinkle {
+                0% { opacity: 0.2; }
+                100% { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Variáveis para áudio
+        let currentAudio = null;
+        const infoPanel = document.getElementById('infoPanel');
+        const planetTitle = document.getElementById('planetTitle');
+        const planetInfo = document.getElementById('planetInfo');
+        const playButton = document.getElementById('playButton');
+        let selectedPlanet = null;
+        
         // Função para tocar áudio
-        function playAudio(audioFileName) {
-            if (audioFileName) {
-                audioPlayer.src = `audios/${audioFileName}`; 
-                audioPlayer.play().catch(error => {
-                    console.warn("Não foi possível tocar o áudio:", error);
-                    // Considerar uma mensagem visual mais amigável para o usuário, se o áudio falhar.
-                    // Por exemplo: infoBoxInfo.textContent = "Oops! O áudio não está disponível.";
-                });
+        function playAudio(audioFile) {
+            // Parar qualquer áudio que esteja tocando
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
             }
+            
+            // Criar e tocar novo áudio
+            currentAudio = new Audio(audioFile);
+            currentAudio.play();
         }
         
-        // Função para atualizar informações e tocar áudio
-        function updateInfoAndPlayAudio(element, name, info, audioFile) {
-            if (activeCelestialBody) {
-                activeCelestialBody.classList.remove('active');
-            }
-            element.classList.add('active');
-            activeCelestialBody = element;
-
-            infoBoxName.parentElement.style.opacity = 0;
-            // Adicionar um pequeno movimento à caixa de informação
-            infoBoxName.parentElement.style.transform = 'translateY(10px)'; 
-            setTimeout(() => {
-                infoBoxName.textContent = name;
-                infoBoxInfo.textContent = info;
-                infoBoxName.parentElement.style.opacity = 1;
-                infoBoxName.parentElement.style.transform = 'translateY(0px)';
-            }, 150); // Aumentar um pouco o tempo para a transição
-
-            playAudio(audioFile);
-        }
-
-        // Adiciona evento de clique para o Sol
-        sun.addEventListener('click', (event) => {
-            event.stopPropagation(); 
-            updateInfoAndPlayAudio(sun, sunDetails.name, sunDetails.info, sunDetails.audio);
-        });
-        
-        // Adiciona evento de clique para cada planeta
+        // Adicionar eventos a cada planeta
+        const planets = document.querySelectorAll('.planet');
         planets.forEach(planet => {
-            planet.addEventListener('click', (event) => {
-                event.stopPropagation(); 
-                const name = planet.getAttribute('data-name');
-                const info = planet.getAttribute('data-info');
-                const audioFile = planet.getAttribute('data-audio');
-                updateInfoAndPlayAudio(planet, name, info, audioFile);
+            planet.addEventListener('click', function() {
+                // Remover seleção anterior
+                if (selectedPlanet) {
+                    selectedPlanet.classList.remove('selected');
+                }
+                
+                // Adicionar seleção atual
+                this.classList.add('selected');
+                selectedPlanet = this;
+                
+                // Obter dados do planeta
+                const planetName = this.getAttribute('data-name');
+                const planetDescription = this.getAttribute('data-info');
+                const audioFile = this.getAttribute('data-audio');
+                
+                // Atualizar painel de informações
+                planetTitle.textContent = planetName;
+                planetInfo.textContent = planetDescription;
+                
+                // Mostrar painel de informações
+                infoPanel.classList.add('visible');
+                
+                // Tocar áudio
+                playAudio(audioFile);
+                
+                // Configurar botão de reproduzir novamente
+                playButton.onclick = function() {
+                    playAudio(audioFile);
+                };
             });
         });
-
-        // Inicializa as estrelas
-        createStars();
-
-        // Adiciona um ouvinte de evento para fechar a informação se clicar fora dos astros
-        document.body.addEventListener('click', (event) => {
-            if (!event.target.closest('.planet') && !event.target.closest('.sun') && !event.target.closest('#info-box')) {
-                if (activeCelestialBody) {
-                    activeCelestialBody.classList.remove('active');
-                    activeCelestialBody = null;
-                }
-                if (!audioPlayer.paused) {
-                    audioPlayer.pause();
-                    audioPlayer.currentTime = 0; 
-                }
-                infoBoxName.parentElement.style.opacity = 0;
-                infoBoxName.parentElement.style.transform = 'translateY(10px)';
-                setTimeout(() => {
-                    infoBoxName.textContent = "Bem-vindos!";
-                    infoBoxInfo.textContent = "Cliquem num planeta ou no Sol para aprender sobre ele!"; // Corrigida a frase
-                    infoBoxName.parentElement.style.opacity = 1;
-                    infoBoxName.parentElement.style.transform = 'translateY(0px)';
-                }, 150);
-            }
-        });
-
     </script>
 </body>
 </html>
