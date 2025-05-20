@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Solar para Crianças</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+            font-family: 'Nunito', 'Arial Rounded MT Bold', 'Arial', sans-serif;
         }
 
         body {
@@ -252,6 +253,110 @@
             margin-right: 8px;
             font-size: 20px;
         }
+        
+        /* Estilo para o título */
+        .titulo-container {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 200;
+            padding: 10px;
+        }
+        
+        .titulo-colorido {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .titulo-colorido span {
+            display: inline-block;
+            animation: bounce 2s ease-in-out infinite;
+            animation-delay: calc(0.1s * var(--i));
+        }
+        
+        .subtitulo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4, #fad0c4, #a18cd1, #ff9a9e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 8px;
+        }
+        
+        .pergunta {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .pergunta span {
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+            animation-delay: calc(0.1s * var(--i));
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .titulo-letra {
+            display: inline-block;
+        }
+        
+        .letra-0 { color: #FF9AA2; }
+        .letra-1 { color: #FFB7B2; }
+        .letra-2 { color: #FFDAC1; }
+        .letra-3 { color: #E2F0CB; }
+        .letra-4 { color: #B5EAD7; }
+        .letra-5 { color: #C7CEEA; }
+        .letra-6 { color: #F2A2E8; }
+        .letra-7 { color: #F8EAD8; }
+        .letra-8 { color: #FFFFD2; }
+        .letra-9 { color: #A2D2FF; }
+        
+        .home-button {
+            background-color: #a18cd1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease-in-out;
+            margin-left: 10px;
+        }
+        
+        .home-button:hover {
+            background-color: #8675b9;
+            transform: scale(1.05);
+        }
+        
+        .home-button:active {
+            transform: scale(0.95);
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
 
         @media (max-width: 768px) {
             .planet-title {
@@ -285,6 +390,57 @@
 </head>
 <body>
     <div class="stars" id="stars"></div>
+    
+    <div class="titulo-container" id="tituloContainer">
+        <h1 class="titulo-colorido">
+            <span class="titulo-letra letra-0" style="--i:1;">O</span>
+            <span class="titulo-letra letra-1" style="--i:2;">l</span>
+            <span class="titulo-letra letra-2" style="--i:3;">á</span>
+            <span class="titulo-letra letra-3" style="--i:4;">,</span>
+            <span class="titulo-letra letra-4" style="--i:5;"> p</span>
+            <span class="titulo-letra letra-5" style="--i:6;">e</span>
+            <span class="titulo-letra letra-6" style="--i:7;">q</span>
+            <span class="titulo-letra letra-7" style="--i:8;">u</span>
+            <span class="titulo-letra letra-8" style="--i:9;">e</span>
+            <span class="titulo-letra letra-9" style="--i:10;">n</span>
+            <span class="titulo-letra letra-0" style="--i:11;">o</span>
+            <span class="titulo-letra letra-1" style="--i:12;">s</span>
+        </h1>
+        <h2 class="subtitulo">exploradores da Tia Ju Bordon!</h2>
+        <h3 class="pergunta">
+            <span style="--i:1;">V</span>
+            <span style="--i:2;">a</span>
+            <span style="--i:3;">m</span>
+            <span style="--i:4;">o</span>
+            <span style="--i:5;">s</span>
+            <span style="--i:6;"> </span>
+            <span style="--i:7;">c</span>
+            <span style="--i:8;">o</span>
+            <span style="--i:9;">n</span>
+            <span style="--i:10;">h</span>
+            <span style="--i:11;">e</span>
+            <span style="--i:12;">c</span>
+            <span style="--i:13;">e</span>
+            <span style="--i:14;">r</span>
+            <span style="--i:15;"> </span>
+            <span style="--i:16;">o</span>
+            <span style="--i:17;"> </span>
+            <span class="letra-0" style="--i:18;">S</span>
+            <span class="letra-1" style="--i:19;">i</span>
+            <span class="letra-2" style="--i:20;">s</span>
+            <span class="letra-3" style="--i:21;">t</span>
+            <span class="letra-4" style="--i:22;">e</span>
+            <span class="letra-5" style="--i:23;">m</span>
+            <span class="letra-6" style="--i:24;">a</span>
+            <span style="--i:25;"> </span>
+            <span class="letra-7" style="--i:26;">S</span>
+            <span class="letra-8" style="--i:27;">o</span>
+            <span class="letra-9" style="--i:28;">l</span>
+            <span class="letra-0" style="--i:29;">a</span>
+            <span class="letra-1" style="--i:30;">r</span>
+            <span class="letra-2" style="--i:31;">?</span>
+        </h3>
+    </div>
     
     <div class="solar-system" id="solarSystem">
         <div id="sun" class="planet" data-info="Eu sou o Sol! Sou uma estrela bem grande e quentinha que ilumina e aquece todos os planetas." data-name="Sol" data-audio="sol.mp3">
@@ -328,7 +484,10 @@
     <div class="info-panel" id="infoPanel">
         <h2 class="planet-title" id="planetTitle"></h2>
         <p class="planet-info" id="planetInfo"></p>
-        <button class="play-button" id="playButton"><span>🔊</span> Ouvir novamente</button>
+        <div class="button-container">
+            <button class="play-button" id="playButton"><span>🔊</span> Ouvir novamente</button>
+            <button class="home-button" id="homeButton"><span>🏠</span> Voltar ao início</button>
+        </div>
     </div>
     
     <script>
@@ -391,6 +550,8 @@
         
         // Adicionar eventos a cada planeta
         const planets = document.querySelectorAll('.planet');
+        const tituloContainer = document.getElementById('tituloContainer');
+        
         planets.forEach(planet => {
             planet.addEventListener('click', function() {
                 // Remover seleção anterior
@@ -414,6 +575,9 @@
                 // Mostrar painel de informações
                 infoPanel.classList.add('visible');
                 
+                // Ocultar o título
+                tituloContainer.style.display = 'none';
+                
                 // Tocar áudio
                 playAudio(audioFile);
                 
@@ -422,6 +586,28 @@
                     playAudio(audioFile);
                 };
             });
+        });
+        
+        // Botão de voltar ao início
+        const homeButton = document.getElementById('homeButton');
+        homeButton.addEventListener('click', function() {
+            // Esconder o painel de informações
+            infoPanel.classList.remove('visible');
+            
+            // Remover seleção de planeta
+            if (selectedPlanet) {
+                selectedPlanet.classList.remove('selected');
+                selectedPlanet = null;
+            }
+            
+            // Mostrar o título novamente
+            tituloContainer.style.display = 'block';
+            
+            // Parar o áudio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
         });
     </script>
 </body>
